@@ -20,7 +20,7 @@ class RevvyApi
 
     public function __construct()
     {
-        $this->config = require './config/revvy.php';
+        $this->config = require '../config/revvy.php';
 
         $this->token = $this->validatedToken();
 
