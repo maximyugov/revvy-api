@@ -12,8 +12,6 @@ class RevvyClient
     public function __construct()
     {
         $this->client = new RevvyApi();
-
-        return $this;
     }
 
     public function getReviews(DateTime $from, DateTime $to, string $placeId, int $messageType): array

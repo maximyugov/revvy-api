@@ -14,8 +14,6 @@ class RevvyApi
     public function __construct()
     {
         $this->config = require './config/revvy.php';
-
-        return $this;
     }
     /**
      * Получение токена авторизации
