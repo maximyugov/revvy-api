@@ -38,7 +38,7 @@ class RevvyApi
         // Проверка токена на срок действия
     }
 
-    public function sendRequest(string $url, array $params, string $method): array
+    public function sendRequest(string $url, array $params, string $method = 'GET'): array
     {
         if ($method === 'GET') {
             return $this->sendGetRequest($url, $params);
