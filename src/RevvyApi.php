@@ -5,24 +5,15 @@ namespace MaximYugov\RevvyApi;
 class RevvyApi
 {
     /**
-     * Имя пользователя
+     * Массив с настройками
      * 
-     * @var string
+     * @var array
      */
-    private string $name;
-
-    /**
-     * Пароль
-     * 
-     * @var string
-     */
-    private string $password;
+    private array $config;
 
     public function __construct()
     {
-        $config = require './config/revvy.php';
-        $this->name = $config['name'];
-        $this->password = $config['password'];
+        $this->config = require './config/revvy.php';
 
         return $this;
     }
@@ -32,8 +23,8 @@ class RevvyApi
     public function getAuthToken()
     {
         $params = [
-            'name' => $this->name,
-            'password' => $this->password,
+            'name' => $this->config['name'],
+            'password' => $this->config['password'],
         ];
 
         $response = $this->sendPostRequest('/api/authentication', $params);
