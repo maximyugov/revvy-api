@@ -23,7 +23,7 @@ class RevvyClient
             'message_type' => $messageType,
         ];
 
-        $response = $this->client->sendGetRequest('/api/chats/list', $params);
+        $response = $this->client->sendRequest('/api/chats/list', $params, 'GET');
 
         return $response;
     }

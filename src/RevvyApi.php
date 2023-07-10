@@ -37,6 +37,17 @@ class RevvyApi
     {
         // Проверка токена на срок действия
     }
+
+    public function sendRequest(string $url, array $params, string $method): array
+    {
+        if ($method === 'GET') {
+            return $this->sendGetRequest($url, $params);
+        }
+        
+        if ($method === 'POST') {
+            return $this->sendPostRequest($url, $params);
+        }
+    }
     
     /**
      * Отправка GET-запроса
@@ -46,7 +57,7 @@ class RevvyApi
      * 
      * @return array
      */
-    public function sendGetRequest(string $url, array $params): array
+    private function sendGetRequest(string $url, array $params): array
     {
         $url = $url . '?' . http_build_query($params);
 
@@ -67,7 +78,7 @@ class RevvyApi
      * 
      * @return array
      */
-    public function sendPostRequest(string $url, array $params): array
+    private function sendPostRequest(string $url, array $params): array
     {
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);
