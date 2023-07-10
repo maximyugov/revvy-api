@@ -1,0 +1,18 @@
+{
+    "name": "maximyugov/revvy-api",
+    "description": "Класс для работы с Revvy API",
+    "type": "library",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "MaximYugov\\RevvyApi\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Maxim Yugov",
+            "email": "maxim.s.yugov@gmail.com"
+        }
+    ],
+    "require": {}
+}
