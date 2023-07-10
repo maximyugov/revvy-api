@@ -11,31 +11,59 @@ class RevvyApi
      */
     private array $config;
 
+    /**
+     * Текущий актуальный токен авторизации
+     * 
+     * @var string
+     */
+    private string $token;
+
     public function __construct()
     {
         $this->config = require './config/revvy.php';
+
+        $this->token = $this->validatedToken();
+
+        // Проверить срок действия токена.
+        // Если срок вышел, сделать запрос на новый токен
+        // Записать новый токен в базу
+        // Если срок не вышел, взять текущий токен
+
+        // Сохранить в переменную токен
     }
+
     /**
-     * Получение токена авторизации
+     * Возвращает текущий валидный токен или генерирует новый
+     * 
+     * @return string
      */
-    public function getAuthToken()
+    public function validatedToken(): string
     {
-        $params = [
-            'name' => $this->config['name'],
-            'password' => $this->config['password'],
-        ];
+        $tokenData = $this->getCurrentToken();
 
-        $response = $this->sendPostRequest('/api/authentication', $params);
+        if ($this->isValidToken($tokenData)) {
+            return $tokenData['token'];
+        }
 
-        //TODO реализовать запись токена в БД
+        $tokenData = $this->getAuthToken();
+        $this->saveAuthToken($tokenData);        
+
+        return $tokenData['token'];
     }
 
     /**
      * Проверка валидности токена авторизации
+     * 
+     * @param array $tokenData
+     * 
+     * @return bool
      */
-    public function isValidAuthToken()
+    public function isValidToken(array $tokenData): bool
     {
-        // Проверка токена на срок действия
+        // Сравнение дат
+        // Если сегодня - дата получения токена <= 30 дней, токен валидный, вернуть true
+        // Если сегодня - дата получения токена > 30 дней, токен невалидный, вернуть false
+        return true;
     }
 
     public function sendRequest(string $url, array $params, string $method = 'GET'): array
@@ -47,6 +75,56 @@ class RevvyApi
         if ($method === 'POST') {
             return $this->sendPostRequest($url, $params);
         }
+    }
+
+    /**
+     * Получение токена авторизации
+     */
+    private function getAuthToken(): array
+    {
+        $params = [
+            'name' => $this->config['name'],
+            'password' => $this->config['password'],
+        ];
+
+        $response = $this->sendPostRequest('/api/authentication', $params);
+
+        return $response;
+    }
+
+    /**
+     * Запись информации о токене в БД
+     * 
+     * @param array $tokenData
+     */
+    private function saveAuthToken(array $tokenData)
+    {
+        $params = [
+            ':jwtToken' => $tokenData['jwtToken'],
+            ':userName' => $tokenData['userName'],
+            ':userId' => $tokenData['userId'],
+            ':createdAt' => $tokenData['createdAt'],
+        ];
+
+        //TODO реализовать запись токена в БД
+        $db = new \PDO("mysql:host={$this->config['localhost']};dbname={$this->config['db_name']}",
+                        $this->config['db_user'],
+                        $this->config['db_password']);
+        $query = "INSERT INTO `{$this->config['db_table']}` (`jwtToken`, `user_name`, `user_id`, `created_at`)
+                    VALUES (:jwtToken, :userName, :userId, :createdAt)";
+        $stmt = $db->prepare($query);
+        $stmt->execute($params);
+    }
+
+    /**
+     * Получение данных о текущем токене
+     */
+    private function getCurrentToken(): array
+    {
+        //TODO Запрос в базу данных и получение информации о сохраненном токене
+        $tokenData = [];
+
+        return $tokenData;
     }
     
     /**

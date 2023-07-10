@@ -6,6 +6,7 @@ return [
      */
     'name' => 'ИМЯ_ПОЛЬЗОВАТЕЛЯ',
     'password' => 'ПАРОЛЬ',
+    'token_expiration_days' => 30,
 
     /**
      * Настройки базы данных
