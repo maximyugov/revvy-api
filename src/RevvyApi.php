@@ -126,7 +126,7 @@ class RevvyApi
             'password' => $this->config['password'],
         ];
 
-        $response = $this->sendRequest('/api/authentication', $params, 'GET', false);
+        $response = $this->sendRequest('/api/authentication', $params, 'POST', false);
 
         return $response;
     }
