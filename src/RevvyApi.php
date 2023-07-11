@@ -2,6 +2,8 @@
 
 namespace MaximYugov\RevvyApi;
 
+use DateTime;
+
 class RevvyApi
 {
     /**
@@ -60,10 +62,15 @@ class RevvyApi
      */
     public function isValidToken(array $tokenData): bool
     {
-        // Сравнение дат
-        // Если сегодня - дата получения токена <= 30 дней, токен валидный, вернуть true
-        // Если сегодня - дата получения токена > 30 дней, токен невалидный, вернуть false
-        return true;
+        $tokenCreatedAt = new DateTime($tokenData['created_at']);
+        $now = new DateTime();
+        $interval = $tokenCreatedAt->diff($now);
+
+        if ($interval->days <= $this->config['token_expiration_days']) {
+            return true;
+        }
+
+        return false;
     }
 
     public function sendRequest(string $url, array $params, string $method = 'GET'): array
