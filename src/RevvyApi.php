@@ -128,10 +128,9 @@ class RevvyApi
      */
     private function getCurrentToken(): array
     {
-        //TODO Запрос в базу данных и получение информации о сохраненном токене
-        $tokenData = [];
+        $tokenData = $this->dbConnection->query("SELECT * FROM {$this->config['db_table']}")->fetchAll(\PDO::FETCH_ASSOC);
 
-        return $tokenData;
+        return $tokenData[0];
     }
     
     /**
