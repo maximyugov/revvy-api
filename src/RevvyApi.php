@@ -71,8 +71,8 @@ class RevvyApi
             return $tokenData['token'];
         }
 
-        $tokenData = $this->generateAuthToken();
-        $this->saveAuthToken($tokenData);        
+        $tokenData = $this->generateToken();
+        $this->saveToken($tokenData);        
 
         return $tokenData['token'];
     }
@@ -100,7 +100,7 @@ class RevvyApi
     /**
      * Получение токена авторизации
      */
-    private function generateAuthToken(): array
+    private function generateToken(): array
     {
         $params = [
             'name' => $this->config['name'],
@@ -117,7 +117,7 @@ class RevvyApi
      * 
      * @param array $tokenData
      */
-    private function saveAuthToken(array $tokenData): void
+    private function saveToken(array $tokenData): void
     {
         $params = [
             ':token' => $tokenData['token'],
