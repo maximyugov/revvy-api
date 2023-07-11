@@ -29,7 +29,7 @@ class RevvyApi
 
     public function __construct()
     {
-        $this->config = require '../config/revvy.php';
+        $this->config = require __DIR__ . '/../config/revvy.php';
 
         $this->dbConnection = new \PDO("mysql:host={$this->config['localhost']};dbname={$this->config['db_name']}",
                         $this->config['db_user'],
