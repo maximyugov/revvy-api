@@ -125,11 +125,26 @@ class RevvyApi
             ':userId' => $tokenData['userId'],
             ':createdAt' => $tokenData['createdAt'],
         ];
-        
-        $query = "INSERT INTO `{$this->config['db_table']}` (`token`, `user_name`, `user_id`, `created_at`)
-                    VALUES (:token, :userName, :userId, :createdAt)";
-        $stmt = $this->dbConnection->prepare($query);
-        $stmt->execute($params);
+
+        try {
+            $this->dbConnection->beginTransaction();
+            
+            // Удаляем старый токен
+            $query = "DELETE FROM `{$this->config['db_table']}`";
+            $stmt = $this->dbConnection->prepare($query);
+            $stmt->execute();
+            
+            // Записываем новый токен
+            $query = "INSERT INTO `{$this->config['db_table']}` (`token`, `user_name`, `user_id`, `created_at`)
+                        VALUES (:token, :userName, :userId, :createdAt)";
+            $stmt = $this->dbConnection->prepare($query);
+            $stmt->execute($params);
+
+            $this->dbConnection->commit();
+          } catch (\Exception $e) {
+            $this->dbConnection->rollBack();
+            echo "Ошибка: " . $e->getMessage();
+          }
     }
 
     /**
