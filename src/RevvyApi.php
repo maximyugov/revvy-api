@@ -144,7 +144,7 @@ class RevvyApi
      */
     private function sendGetRequest(string $url, array $params): array
     {
-        $url = $url . '?' . http_build_query($params);
+        $url = $this->config['baseurl'] . $url . '?' . http_build_query($params);
 
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);
@@ -165,6 +165,8 @@ class RevvyApi
      */
     private function sendPostRequest(string $url, array $params): array
     {
+        $url = $this->config['baseurl'] . $url;
+
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);
         curl_setopt($ch, CURLOPT_POST, 1);

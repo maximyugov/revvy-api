@@ -7,6 +7,7 @@ return [
     'name' => 'ИМЯ_ПОЛЬЗОВАТЕЛЯ',
     'password' => 'ПАРОЛЬ',
     'token_expiration_days' => 30,
+    'baseurl' => 'https://revvy.ru',
 
     /**
      * Настройки базы данных
