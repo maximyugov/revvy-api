@@ -2,7 +2,6 @@
 
 namespace MaximYugov\RevvyApi;
 
-use DateTime;
 use MaximYugov\RevvyApi\RevvyApi;
 
 class RevvyClient
@@ -14,7 +13,7 @@ class RevvyClient
         $this->client = new RevvyApi();
     }
 
-    public function getReviews(DateTime $from, DateTime $to, string $placeId, int $messageType): array
+    public function getReviews(\DateTime $from, \DateTime $to, string $placeId, int $messageType): array
     {
         $params = [
             'from' => $from->format("Y-m-d\\TH:i:s"),
