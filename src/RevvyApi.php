@@ -120,16 +120,14 @@ class RevvyApi
     private function saveAuthToken(array $tokenData): void
     {
         $params = [
-            ':jwtToken' => $tokenData['jwtToken'],
+            ':token' => $tokenData['token'],
             ':userName' => $tokenData['userName'],
             ':userId' => $tokenData['userId'],
             ':createdAt' => $tokenData['createdAt'],
         ];
-
-        //TODO реализовать запись токена в БД
         
-        $query = "INSERT INTO `{$this->config['db_table']}` (`jwtToken`, `user_name`, `user_id`, `created_at`)
-                    VALUES (:jwtToken, :userName, :userId, :createdAt)";
+        $query = "INSERT INTO `{$this->config['db_table']}` (`token`, `user_name`, `user_id`, `created_at`)
+                    VALUES (:token, :userName, :userId, :createdAt)";
         $stmt = $this->dbConnection->prepare($query);
         $stmt->execute($params);
     }
