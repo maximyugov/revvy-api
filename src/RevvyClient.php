@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace MaximYugov\RevvyApi;
 
 use MaximYugov\RevvyApi\RevvyApi;
