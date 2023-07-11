@@ -38,6 +38,15 @@ class RevvyApi
         $this->token = $this->validatedToken();
     }
 
+    /**
+     * Отправка запроса к Revvy API
+     * 
+     * @param string $url
+     * @param array $params
+     * @param string $method
+     * 
+     * @return array
+     */
     public function sendRequest(string $url, array $params, string $method = 'GET'): array
     {
         if ($method === 'GET') {
