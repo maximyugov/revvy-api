@@ -45,15 +45,34 @@ class RevvyApi
      * 
      * @return array
      */
-    public function sendRequest(string $url, array $params, string $method = 'GET'): array
+    public function sendRequest(string $url, array $params, string $method = 'GET', bool $authRequired = true): array
     {
+        $url = $this->config['baseurl'] . $url;
+
+        $ch = curl_init();
+        $headers = ['Content-Type: application/json'];
+
+        if ($authRequired) {
+            $headers[] = "Authorization: Bearer {$this->token}";
+        }
+
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+
         if ($method === 'GET') {
-            return $this->sendGetRequest($url, $params);
+            $url .= '?' . http_build_query($params);
         }
         
         if ($method === 'POST') {
-            return $this->sendPostRequest($url, $params);
+            curl_setopt($ch, CURLOPT_POST, 1);
+            curl_setopt($ch, CURLOPT_POSTFIELDS, $params);
         }
+
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        $response = curl_exec($ch);
+        curl_close($ch);
+
+        return json_decode($response, true);
     }
 
     /**
@@ -105,7 +124,7 @@ class RevvyApi
             'password' => $this->config['password'],
         ];
 
-        $response = $this->sendPostRequest('/api/authentication', $params);
+        $response = $this->sendRequest('/api/authentication', $params, 'GET', false);
 
         return $response;
     }
@@ -153,49 +172,5 @@ class RevvyApi
         $tokenData = $this->dbConnection->query("SELECT * FROM {$this->config['db_table']}")->fetchAll(\PDO::FETCH_ASSOC);
 
         return $tokenData[0];
-    }
-    
-    /**
-     * Отправка GET-запроса
-     * 
-     * @param string $url
-     * @param array $params
-     * 
-     * @return array
-     */
-    private function sendGetRequest(string $url, array $params): array
-    {
-        $url = $this->config['baseurl'] . $url . '?' . http_build_query($params);
-
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, $url);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-        $response = curl_exec($ch);
-        curl_close($ch);
-        
-        return json_decode($response, true);
-    }
-
-    /**
-     * Отправка POST-запроса
-     * 
-     * @param string $url
-     * @param array $params
-     * 
-     * @return array
-     */
-    private function sendPostRequest(string $url, array $params): array
-    {
-        $url = $this->config['baseurl'] . $url;
-
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, $url);
-        curl_setopt($ch, CURLOPT_POST, 1);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $params);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        $response = curl_exec($ch);
-        curl_close($ch);
-        
-        return json_decode($response, true);
     }
 }
