@@ -38,12 +38,23 @@ class RevvyApi
         $this->token = $this->validatedToken();
     }
 
+    public function sendRequest(string $url, array $params, string $method = 'GET'): array
+    {
+        if ($method === 'GET') {
+            return $this->sendGetRequest($url, $params);
+        }
+        
+        if ($method === 'POST') {
+            return $this->sendPostRequest($url, $params);
+        }
+    }
+
     /**
      * Возвращает текущий валидный токен или генерирует новый
      * 
      * @return string
      */
-    public function validatedToken(): string
+    private function validatedToken(): string
     {
         $tokenData = $this->getCurrentToken();
 
@@ -64,7 +75,7 @@ class RevvyApi
      * 
      * @return bool
      */
-    public function isValidToken(array $tokenData): bool
+    private function isValidToken(array $tokenData): bool
     {
         $tokenCreatedAt = new DateTime($tokenData['created_at']);
         $now = new DateTime();
@@ -75,17 +86,6 @@ class RevvyApi
         }
 
         return false;
-    }
-
-    public function sendRequest(string $url, array $params, string $method = 'GET'): array
-    {
-        if ($method === 'GET') {
-            return $this->sendGetRequest($url, $params);
-        }
-        
-        if ($method === 'POST') {
-            return $this->sendPostRequest($url, $params);
-        }
     }
 
     /**
