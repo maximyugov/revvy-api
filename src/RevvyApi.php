@@ -20,18 +20,22 @@ class RevvyApi
      */
     private string $token;
 
+    /**
+     * Подключение к базе данных
+     * 
+     * @var \PDO
+     */
+    private \PDO $dbConnection;
+
     public function __construct()
     {
         $this->config = require '../config/revvy.php';
 
+        $this->dbConnection = new \PDO("mysql:host={$this->config['localhost']};dbname={$this->config['db_name']}",
+                        $this->config['db_user'],
+                        $this->config['db_password']);
+
         $this->token = $this->validatedToken();
-
-        // Проверить срок действия токена.
-        // Если срок вышел, сделать запрос на новый токен
-        // Записать новый токен в базу
-        // Если срок не вышел, взять текущий токен
-
-        // Сохранить в переменную токен
     }
 
     /**
@@ -104,7 +108,7 @@ class RevvyApi
      * 
      * @param array $tokenData
      */
-    private function saveAuthToken(array $tokenData)
+    private function saveAuthToken(array $tokenData): void
     {
         $params = [
             ':jwtToken' => $tokenData['jwtToken'],
@@ -114,12 +118,10 @@ class RevvyApi
         ];
 
         //TODO реализовать запись токена в БД
-        $db = new \PDO("mysql:host={$this->config['localhost']};dbname={$this->config['db_name']}",
-                        $this->config['db_user'],
-                        $this->config['db_password']);
+        
         $query = "INSERT INTO `{$this->config['db_table']}` (`jwtToken`, `user_name`, `user_id`, `created_at`)
                     VALUES (:jwtToken, :userName, :userId, :createdAt)";
-        $stmt = $db->prepare($query);
+        $stmt = $this->dbConnection->prepare($query);
         $stmt->execute($params);
     }
 
