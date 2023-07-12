@@ -173,6 +173,6 @@ class RevvyApi
     {
         $tokenData = $this->dbConnection->query("SELECT * FROM {$this->config['db_table']}")->fetchAll(\PDO::FETCH_ASSOC);
 
-        return $tokenData[0];
+        return current($tokenData);
     }
 }
